@@ -1,10 +1,59 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:unige_board/components/participate_button.dart';
 
-class WallPost extends StatelessWidget {
+class WallPost extends StatefulWidget {
   final String message;
   final String user;
+  final String postId;
+  final List<String> participants;
 
-  const WallPost({super.key, required this.message, required this.user});
+  const WallPost(
+      {super.key,
+      required this.message,
+      required,
+      required this.postId,
+      required this.participants,
+      required this.user});
+
+  @override
+  State<WallPost> createState() => _WallPostState();
+}
+
+class _WallPostState extends State<WallPost> {
+  // user
+  final loggedInUser = FirebaseAuth.instance.currentUser!;
+  bool isParticipate = false;
+
+  @override
+  void initState() {
+    super.initState();
+    isParticipate = widget.participants.contains(loggedInUser.email);
+  }
+
+  // toggle participate
+  void toggleParticipate() {
+    setState(() {
+      isParticipate = !isParticipate;
+    });
+
+    // access the document in firebase
+    DocumentReference postRef =
+        FirebaseFirestore.instance.collection('User Posts').doc(widget.postId);
+
+    if (isParticipate) {
+      // Add user email to the list if wishes
+      postRef.update({
+        'Participants': FieldValue.arrayUnion([loggedInUser.email]),
+      });
+    } else {
+      // Remove the user if changed mind
+      postRef.update({
+        'Participants': FieldValue.arrayRemove([loggedInUser.email]),
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,16 +66,34 @@ class WallPost extends StatelessWidget {
       padding: EdgeInsets.all(25),
       child: Row(
         children: [
+          Container(
+            margin: EdgeInsets.only(right: 50),
+            child: Column(
+              children: [
+                // participate button
+                ParticipateButton(
+                    isParticipate: isParticipate, onTap: toggleParticipate),
+
+                const SizedBox(
+                  height: 5,
+                ),
+
+                // participate count
+                Text(widget.participants.length.toString())
+
+              ],
+            ),
+          ),
           // Message and user email
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                user,
+                widget.user,
                 style: TextStyle(color: Color(0xff424245)),
               ),
               const SizedBox(height: 10),
-              Text(message)
+              Text(widget.message),
             ],
           )
         ],

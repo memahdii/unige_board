@@ -27,7 +27,8 @@ class _ChatScreenState extends State<ChatScreen> {
         FirebaseFirestore.instance.collection("User Posts").add({
           'UserEmail': loggedInUser.email,
           'Message': textController.text,
-          'TimeStamp': Timestamp.now()
+          'TimeStamp': Timestamp.now(),
+          'Participants': [],
         });
       }
     }
@@ -36,8 +37,6 @@ class _ChatScreenState extends State<ChatScreen> {
       textController.clear();
     });
   }
-
-
 
   @override
   void initState() {
@@ -91,7 +90,12 @@ class _ChatScreenState extends State<ChatScreen> {
                         // get the message
                         final post = snapshot.data!.docs[index];
                         return WallPost(
-                            message: post['Message'], user: post['UserEmail']);
+                          message: post['Message'],
+                          user: post['UserEmail'],
+                          postId: post.id,
+                          participants:
+                              List<String>.from(post.data()['Participants'] ?? []),
+                        );
                       },
                     );
                   } else if (snapshot.hasError) {
