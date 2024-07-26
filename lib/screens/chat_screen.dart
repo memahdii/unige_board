@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:unige_board/components/my_textfield.dart';
+import 'package:unige_board/components/wall_post.dart';
 import 'package:unige_board/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:unige_board/screens/welcome_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ChatScreen extends StatefulWidget {
-
   static String id = 'chat_screen';
 
   @override
@@ -13,20 +15,44 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   final _auth = FirebaseAuth.instance;
-  late User loggedInUser;
+  final loggedInUser = FirebaseAuth.instance.currentUser!;
+  final textController = TextEditingController();
+
+  // post message
+  void postMessage() {
+    // only post if there is sth in the textfield
+    if (textController.text.isNotEmpty) {
+      if (loggedInUser.email != null) {
+        // store in firebase
+        FirebaseFirestore.instance.collection("User Posts").add({
+          'UserEmail': loggedInUser.email,
+          'Message': textController.text,
+          'TimeStamp': Timestamp.now()
+        });
+      }
+    }
+    // Clear the textField
+    setState(() {
+      textController.clear();
+    });
+  }
+
+
 
   @override
   void initState() {
     super.initState();
     getCurrentUser();
   }
-  void getCurrentUser() async{
+
+  void getCurrentUser() async {
     try {
       print(loggedInUser.email);
     } catch (e) {
       print(e);
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,46 +60,74 @@ class _ChatScreenState extends State<ChatScreen> {
         leading: null,
         actions: <Widget>[
           IconButton(
-              icon: Icon(Icons.close),
+              icon: Icon(Icons.logout),
               onPressed: () {
                 //Implement logout functionality
                 _auth.signOut();
                 Navigator.pushNamed(context, WelcomeScreen.id);
               }),
         ],
-        title: Text('⚡️Chat'),
+        title: Text('BOARD'),
         backgroundColor: Colors.lightBlueAccent,
       ),
-      body: SafeArea(
+      body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Container(
-              decoration: kMessageContainerDecoration,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Expanded(
-                    child: TextField(
-                      onChanged: (value) {
-                        //Do something with the user input.
+          children: [
+            // the wall
+            Expanded(
+              child: StreamBuilder(
+                stream: FirebaseFirestore.instance
+                    .collection("User Posts")
+                    .orderBy(
+                      "TimeStamp",
+                      descending: false,
+                    )
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    return ListView.builder(
+                      itemCount: snapshot.data!.docs.length,
+                      itemBuilder: (context, index) {
+                        // get the message
+                        final post = snapshot.data!.docs[index];
+                        return WallPost(
+                            message: post['Message'], user: post['UserEmail']);
                       },
-                      decoration: kMessageTextFieldDecoration,
+                    );
+                  } else if (snapshot.hasError) {
+                    return Center(
+                      child: Text("Error: " + snapshot.error.toString()),
+                    );
+                  }
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                },
+              ),
+            ),
+            // post message
+            Padding(
+              padding: const EdgeInsets.all(25.0),
+              child: Row(
+                children: [
+                  // Textfield
+                  Expanded(
+                    child: MyTextField(
+                      controller: textController,
+                      hintText: "Write sth on the board",
+                      obscureText: false,
                     ),
                   ),
-                  TextButton(
-                    onPressed: () {
-                      //Implement send functionality.
-                    },
-                    child: Text(
-                      'Send',
-                      style: kSendButtonTextStyle,
-                    ),
-                  ),
+
+                  // Post Button
+                  IconButton(
+                      onPressed: postMessage,
+                      icon: const Icon(Icons.arrow_circle_up))
                 ],
               ),
             ),
+            // logged in as
+            Text("Logged in as: " + loggedInUser.email!),
           ],
         ),
       ),
