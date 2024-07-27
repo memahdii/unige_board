@@ -79,8 +79,7 @@ class _WallPostState extends State<WallPost> {
                 ),
 
                 // participate count
-                Text(widget.participants.length.toString())
-
+                Text(widget.participants.length.toString()),
               ],
             ),
           ),
@@ -93,7 +92,22 @@ class _WallPostState extends State<WallPost> {
                 style: TextStyle(color: Color(0xff424245)),
               ),
               const SizedBox(height: 10),
-              Text(widget.message),
+
+              Text(widget.message, style: TextStyle(fontSize: 18, color: Colors.white))
+
+            ],
+          ),
+          Spacer(),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                'Participants',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+              Text(widget.participants.join("\n"),
+                  textAlign: TextAlign.start,
+                  style: TextStyle(color: Colors.purple)),
             ],
           )
         ],
