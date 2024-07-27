@@ -1,5 +1,6 @@
 import 'package:unige_board/screens/chat_screen.dart';
 import 'package:unige_board/screens/login_screen.dart';
+import 'package:unige_board/screens/participants_list.dart';
 import 'package:unige_board/screens/registration_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:unige_board/screens/welcome_screen.dart';

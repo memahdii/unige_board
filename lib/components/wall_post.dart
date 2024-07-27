@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:unige_board/components/participate_button.dart';
+import 'package:unige_board/screens/participants_list.dart';
 
 class WallPost extends StatefulWidget {
   final String message;
@@ -57,60 +58,72 @@ class _WallPostState extends State<WallPost> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.amberAccent,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      margin: EdgeInsets.only(top: 25, left: 25, right: 25),
-      padding: EdgeInsets.all(25),
-      child: Row(
-        children: [
-          Container(
-            margin: EdgeInsets.only(right: 50),
-            child: Column(
-              children: [
-                // participate button
-                ParticipateButton(
-                    isParticipate: isParticipate, onTap: toggleParticipate),
-
-                const SizedBox(
-                  height: 5,
-                ),
-
-                // participate count
-                Text(widget.participants.length.toString()),
-              ],
+    return Flexible(
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.amberAccent,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        margin: EdgeInsets.only(top: 25, left: 25, right: 25),
+        padding: EdgeInsets.all(25),
+        child: Row(
+          children: [
+            Container(
+              margin: EdgeInsets.only(right: 50),
+              child: Column(
+                children: [
+                  // participate button
+                  ParticipateButton(
+                      isParticipate: isParticipate, onTap: toggleParticipate),
+      
+                  const SizedBox(
+                    height: 5,
+                  ),
+      
+                  // participate count
+                  Text(widget.participants.length.toString()),
+                ],
+              ),
             ),
-          ),
-          // Message and user email
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                widget.user,
-                style: TextStyle(color: Color(0xff424245)),
-              ),
-              const SizedBox(height: 10),
+            // Message and user email
 
-              Text(widget.message, style: TextStyle(fontSize: 18, color: Colors.white))
-
-            ],
-          ),
-          Spacer(),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                'Participants',
-                style: TextStyle(fontWeight: FontWeight.bold),
+              Flexible(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.user,
+                      style: TextStyle(color: Color(0xff424245), fontSize: 12),
+                    ),
+                    const SizedBox(height: 10),
+                
+                    Text(widget.message, style: TextStyle(color: Colors.white, fontSize: 12))
+                
+                  ],
+                ),
               ),
-              Text(widget.participants.join("\n"),
-                  textAlign: TextAlign.start,
-                  style: TextStyle(color: Colors.purple)),
-            ],
-          )
-        ],
+
+            // show participants
+
+            // Spacer(),
+            // Flexible(
+            //   child: Column(
+            //     crossAxisAlignment: CrossAxisAlignment.center,
+            //     children: [
+            //       Text(
+            //         'Participants',
+            //         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+            //       ),
+            //       Text(widget.participants.join("\n"),
+            //           textAlign: TextAlign.start,
+            //           style: TextStyle(color: Colors.purple, fontSize: 12)),
+            //     ],
+            //   ),
+            // )
+
+      
+          ],
+        ),
       ),
     );
   }
