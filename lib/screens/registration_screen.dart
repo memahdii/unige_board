@@ -3,7 +3,7 @@ import 'package:unige_board/components/rounded_button.dart';
 import 'package:flutter/material.dart';
 import 'package:unige_board/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:unige_board/screens/chat_screen.dart';
+import 'package:unige_board/screens/board_screen.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 class RegistrationScreen extends StatefulWidget {
@@ -76,7 +76,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         setState(() {
                           showSpinner = true;
                         });
-                        Navigator.pushNamed(context, ChatScreen.id);
+                        Navigator.pushNamed(context, BoardScreen.id);
                       }
                       setState(() {
                         showSpinner = false;
@@ -84,14 +84,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     }
                     catch (e) {
                       Fluttertoast.showToast(
-                          msg: "Please fill the fields correctly.",
+                          msg: "$e",
                           toastLength: Toast.LENGTH_LONG,
                           gravity: ToastGravity.CENTER,
                           timeInSecForIosWeb: 1,
                           backgroundColor: Colors.red,
                           textColor: Colors.white,
                           fontSize: 16.0);
-                      print(e);
                     }
                   })
             ],

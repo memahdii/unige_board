@@ -40,7 +40,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProvider
       // print(controller.value);
     });
 
-    tweenAnimation = ColorTween(begin: Color(0xff424245) , end: Color(0xfff5f5f7)).animate(controller);
+    tweenAnimation = ColorTween(begin: Colors.black , end: Color(0xfff5f5f7)).animate(controller);
   }
 
 

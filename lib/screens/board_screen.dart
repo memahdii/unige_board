@@ -6,14 +6,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:unige_board/screens/welcome_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class ChatScreen extends StatefulWidget {
-  static String id = 'chat_screen';
+class BoardScreen extends StatefulWidget {
+  static String id = 'board_screen';
 
   @override
-  _ChatScreenState createState() => _ChatScreenState();
+  _BoardScreenState createState() => _BoardScreenState();
 }
 
-class _ChatScreenState extends State<ChatScreen> {
+class _BoardScreenState extends State<BoardScreen> {
   final _auth = FirebaseAuth.instance;
   final loggedInUser = FirebaseAuth.instance.currentUser!;
   final textController = TextEditingController();
@@ -41,16 +41,9 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     super.initState();
-    getCurrentUser();
+    // getCurrentUser();
   }
 
-  void getCurrentUser() async {
-    try {
-      print(loggedInUser.email);
-    } catch (e) {
-      print(e);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {

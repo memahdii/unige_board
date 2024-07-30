@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:unige_board/components/participate_button.dart';
-import 'package:unige_board/screens/participants_list.dart';
+
 
 class WallPost extends StatefulWidget {
   final String message;
@@ -64,8 +64,8 @@ class _WallPostState extends State<WallPost> {
           color: Colors.amberAccent,
           borderRadius: BorderRadius.circular(8),
         ),
-        margin: EdgeInsets.only(top: 25, left: 25, right: 25),
-        padding: EdgeInsets.all(25),
+        margin: EdgeInsets.only(top: 5, left: 5, right: 5),
+        padding: EdgeInsets.all(5),
         child: Row(
           children: [
             Container(
@@ -104,24 +104,25 @@ class _WallPostState extends State<WallPost> {
               ),
 
             // show participants
+            Spacer(),
 
-            // Spacer(),
-            // Flexible(
-            //   child: Column(
-            //     crossAxisAlignment: CrossAxisAlignment.center,
-            //     children: [
-            //       Text(
-            //         'Participants',
-            //         style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-            //       ),
-            //       Text(widget.participants.join("\n"),
-            //           textAlign: TextAlign.start,
-            //           style: TextStyle(color: Colors.purple, fontSize: 12)),
-            //     ],
-            //   ),
-            // )
+            // if(loggedInUser.email == FirebaseFirestore.instance.collection('User Posts').doc(widget.user)) {};
+            Flexible(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    'Participants',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                  ),
+                  Text(widget.participants.join("\n"),
+                      textAlign: TextAlign.start,
+                      style: TextStyle(color: Colors.purple, fontSize: 12)),
+                ],
+              ),
+            )
 
-      
+
           ],
         ),
       ),
